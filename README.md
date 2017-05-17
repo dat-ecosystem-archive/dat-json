@@ -22,19 +22,43 @@ var datjson = DatJSON(archive)
 datjson.create({title: 'a dat', description: 'exciting'}, function (err) {
   if (err) throw err
 })
+
+datjson.read(function (err, data) {
+  console.log(data)
+})
 ```
+
+Write to a `dat.json` on the file system also:
+
+```js
+var DatJSON = require('dat-json')
+
+var datjson = DatJSON(archive, {file: path.join(dat.path, 'dat.json')})
+
+datjson.create({title: 'a dat', description: 'exciting'}, function (err) {
+  if (err) throw err
+})
+```
+
+**TODO: replace file option with hyperdrive indexing**
 
 ## API
 
-### `var datjson = DatJSON(archive)`
+### `var datjson = DatJSON(archive, [opts])`
+
+create a new datJson db
+
+Options:
+
+* `opts.file` - dat.json file path, updates will be written to file system and archive
 
 #### `datjson.create([data], cb)`
 
-Create a new `dat.json` file in the archive with the default keys (`name`, `url`, `title`, `description`). Pass in any additional data to add on initial create.
+Create a new `dat.json` file in the archive with the default keys (`url`, `title`, `description`). Pass in any additional data to add on initial create.
 
 #### `datjson.write(key, val, cb)` or `datjson.write(data, cb)`
 
-Write a single `key` and `value` or an object, `data`, to the `dat.json` file.
+Write a single `key` and `value` or an object, `data`, to the `dat.json` file. Use `file` option above to also update the file on the file system.
 
 #### `datjson.delete(key, cb)`
 
