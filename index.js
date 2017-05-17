@@ -8,6 +8,11 @@ module.exports = function (archive, opts) {
 
   var db = toiletdb({name: '/dat.json', fs: archive})
   var fileDb = opts.file ? toiletdb(opts.file) : null
+  var defaults = {
+    title: '',
+    description: '',
+    url: 'dat://' + stringKey(archive.key)
+  }
 
   var that = {
     read: function (cb) {
@@ -34,14 +39,8 @@ module.exports = function (archive, opts) {
     create: function (data, cb) {
       if (typeof data === 'function') return that.create(null, data)
       if (!archive.writable) return cb(new Error('Archive not writable'))
-      var defaults = xtend({
-        title: '', // TODO path.basename(dir),
-        name: '',
-        description: ''
-      }, data, {
-        url: 'dat://' + stringKey(archive.key) // force the key as default
-      })
-      that.write(defaults, cb)
+      data = xtend(defaults, data)
+      that.write(data, cb)
     }
   }
 
