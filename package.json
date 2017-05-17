@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "dat-encoding": "^4.0.2",
-    "toiletdb": "github:joehand/toiletdb#custom-fs",
+    "toiletdb": "^1.3.0",
     "xtend": "^4.0.1"
   }
 }
