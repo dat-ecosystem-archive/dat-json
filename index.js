@@ -55,7 +55,6 @@ module.exports = function (archive, opts) {
   }
 
   function writeAll (data, cb) {
-    if (!archive.writable) return cb(new Error('Archive not writable'))
     var keys = Object.keys(data)
     var pending = keys.length
     keys.map(function (key) {
