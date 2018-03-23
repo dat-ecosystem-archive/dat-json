@@ -48,6 +48,18 @@ test('Write dat.json to archive', function (t) {
   })
 })
 
+test('.create with no writable archive errors', function (t) {
+  var archive = { writable: false }
+  var datjson = datJSON(archive)
+  var async = false
+  datjson.create(function (err) {
+    t.is(err.message, 'Archive not writable', 'should error')
+    t.is(async, true, 'callback is asyncronous')
+    t.end()
+  })
+  async = true
+})
+
 test('Write dat.json to file and archive', function (t) {
   var archive = hyperdrive(ram)
   var file = path.join(__dirname, 'dat.json')
