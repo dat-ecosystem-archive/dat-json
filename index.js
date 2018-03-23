@@ -17,8 +17,11 @@ module.exports = function (archive, opts) {
       })
     },
     write: function (key, val, cb) {
-      if (!archive.writable) return cb(new Error('Archive not writable'))
-      if (typeof key === 'object') return writeAll(key, val) // assume val = cb
+      if (typeof val === 'function') cb = val
+      if (!archive.writable) {
+        return process.nextTick(cb, new Error('Archive not writable'))
+      }
+      if (typeof key === 'object') return writeAll(key, cb)
       // TODO: validate things
       if (!fileDb) return db.write(key, val, cb)
 
@@ -33,7 +36,9 @@ module.exports = function (archive, opts) {
     delete: db.delete,
     create: function (data, cb) {
       if (typeof data === 'function') return that.create(null, data)
-      if (!archive.writable) return cb(new Error('Archive not writable'))
+      if (!archive.writable) {
+        return process.nextTick(cb, new Error('Archive not writable'))
+      }
       data = xtend(getdefaults(), data)
       that.write(data, cb)
     }
@@ -50,7 +55,6 @@ module.exports = function (archive, opts) {
   }
 
   function writeAll (data, cb) {
-    if (!archive.writable) return cb(new Error('Archive not writable'))
     var keys = Object.keys(data)
     var pending = keys.length
     keys.map(function (key) {
