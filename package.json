@@ -1,7 +1,7 @@
 {
   "name": "dat-json",
   "description": "read &amp; write dat.json files",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Joe Hand <joe@hand.email>",
   "bugs": {
     "url": "https://github.com/joehand/dat-json/issues"
