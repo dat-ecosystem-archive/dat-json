@@ -74,7 +74,7 @@ Read the current `dat.json`.
 
 [npm-image]: https://img.shields.io/npm/v/dat-json.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/dat-json
-[travis-image]: https://img.shields.io/travis/joehand/dat-json.svg?style=flat-square
-[travis-url]: https://travis-ci.org/joehand/dat-json
+[travis-image]: https://img.shields.io/travis/datproject/dat-json.svg?style=flat-square
+[travis-url]: https://travis-ci.org/datproject/dat-json
 [standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [standard-url]: http://npm.im/standard
