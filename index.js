@@ -33,7 +33,9 @@ module.exports = function (archive, opts) {
     delete: db.delete,
     create: function (data, cb) {
       if (typeof data === 'function') return that.create(null, data)
-      if (!archive.writable) return cb(new Error('Archive not writable'))
+      if (!archive.writable) {
+        return process.nextTick(cb, new Error('Archive not writable'))
+      }
       data = xtend(getdefaults(), data)
       that.write(data, cb)
     }
