@@ -11,7 +11,7 @@ test('Default dat.json', function (t) {
     var datjson = datJSON(archive)
     datjson.read(function (err) {
       t.ok(err, 'error read before write')
-      datjson.create({name: 'test'}, function (err) {
+      datjson.create({ name: 'test' }, function (err) {
         t.error(err, 'no error')
 
         datjson.read(function (err, data) {
@@ -32,7 +32,7 @@ test('Write dat.json to archive', function (t) {
     var datjson = datJSON(archive)
     datjson.create(function (err) {
       t.error(err, 'no error')
-      datjson.write({specialVal: 'cat'}, check)
+      datjson.write({ specialVal: 'cat' }, check)
 
       function check (err) {
         t.error(err, 'no error')
@@ -76,7 +76,7 @@ test('.write with data object and no writable archive errors', function (t) {
   var archive = { writable: false }
   var datjson = datJSON(archive)
   var async = false
-  datjson.write({specialVal: 'cat'}, function (err) {
+  datjson.write({ specialVal: 'cat' }, function (err) {
     t.is(err.message, 'Archive not writable', 'should error')
     t.is(async, true, 'callback is asyncronous')
     t.end()
@@ -88,10 +88,10 @@ test('Write dat.json to file and archive', function (t) {
   var archive = hyperdrive(ram)
   var file = path.join(__dirname, 'dat.json')
   archive.ready(function () {
-    var datjson = datJSON(archive, {file: file})
+    var datjson = datJSON(archive, { file: file })
     datjson.create(function (err) {
       t.error(err, 'no error')
-      datjson.write({specialVal: 'cat'}, checkFile)
+      datjson.write({ specialVal: 'cat' }, checkFile)
 
       function checkFile (err) {
         t.error(err, 'no error')

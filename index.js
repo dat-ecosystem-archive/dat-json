@@ -1,12 +1,12 @@
 var stringKey = require('dat-encoding').toStr
 // var path = require('path')
-var xtend = require('xtend')
+var xtend = Object.assign
 var toiletdb = require('toiletdb')
 
 module.exports = function (archive, opts) {
   if (!opts) opts = {}
 
-  var db = toiletdb({name: '/dat.json', fs: archive})
+  var db = toiletdb({ name: '/dat.json', fs: archive })
   var fileDb = opts.file ? toiletdb(opts.file) : null
 
   var that = {
