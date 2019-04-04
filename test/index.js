@@ -3,119 +3,106 @@ var path = require('path')
 var test = require('tape')
 var hyperdrive = require('hyperdrive')
 var ram = require('random-access-memory')
-var datJSON = require('..')
+var DatJSON = require('..')
 
 test('Default dat.json', function (t) {
   var archive = hyperdrive(ram)
-  archive.ready(function () {
-    var datjson = datJSON(archive)
-    datjson.read(function (err) {
-      t.ok(err, 'error read before write')
-      datjson.create({ name: 'test' }, function (err) {
-        t.error(err, 'no error')
+  archive.ready(async function () {
+    var datjson = DatJSON(archive)
+    try {
+      await datjson.read()
+    } catch (e) {
+      t.ok(e, 'error read before write')
+    }
 
-        datjson.read(function (err, data) {
-          t.error(err, 'no error')
-          t.ok(data, 'has metadata')
-          t.same(data.url, `dat://${archive.key.toString('hex')}`)
-          t.same(data.name, 'test', 'has name value')
-          t.end()
-        })
-      })
-    })
+    try {
+      await datjson.create({ name: 'test' })
+      const data = await datjson.read()
+      t.ok(data, 'has metadata')
+      t.same(data.url, `dat://${archive.key.toString('hex')}`)
+      t.same(data.name, 'test', 'has name value')
+    } catch (e) {
+      t.ifErr(e)
+    }
+    t.end()
   })
 })
 
 test('Write dat.json to archive', function (t) {
   var archive = hyperdrive(ram)
-  archive.ready(function () {
-    var datjson = datJSON(archive)
-    datjson.create(function (err) {
-      t.error(err, 'no error')
-      datjson.write({ specialVal: 'cat' }, check)
+  archive.ready(async function () {
+    var datjson = DatJSON(archive)
+    try {
+      await datjson.create()
+      await datjson.write({ specialVal: 'cat' })
 
-      function check (err) {
-        t.error(err, 'no error')
-        datjson.read(function (err, data) {
-          t.error(err, 'no error')
-          t.ok(data, 'has metadata')
-          t.same(data.url, `dat://${archive.key.toString('hex')}`, 'url ok')
-          t.same(data.specialVal, 'cat', 'has special value')
-          t.end()
-        })
-      }
-    })
+      var data = await datjson.read()
+      t.ok(data, 'has metadata')
+      t.same(data.url, `dat://${archive.key.toString('hex')}`, 'url ok')
+      t.same(data.specialVal, 'cat', 'has special value')
+    } catch (e) {
+      t.error(e, 'no error')
+    }
+    t.end()
   })
 })
 
-test('.create with no writable archive errors', function (t) {
+test('.create with no writable archive errors', async function (t) {
   var archive = { writable: false }
-  var datjson = datJSON(archive)
-  var async = false
-  datjson.create(function (err) {
+  var datjson = DatJSON(archive)
+  try {
+    await datjson.create()
+  } catch (err) {
     t.is(err.message, 'Archive not writable', 'should error')
-    t.is(async, true, 'callback is asyncronous')
-    t.end()
-  })
-  async = true
+  }
+  t.end()
 })
 
-test('.write with key/value and no writable archive errors', function (t) {
+test('.write with key/value and no writable archive errors', async function (t) {
   var archive = { writable: false }
-  var datjson = datJSON(archive)
-  var async = false
-  datjson.write('key', 'value', function (err) {
-    t.is(err.message, 'Archive not writable', 'should error')
-    t.is(async, true, 'callback is asyncronous')
-    t.end()
-  })
-  async = true
+  var datjson = DatJSON(archive)
+  try {
+    await datjson.write('key', 'value')
+  } catch (e) {
+    t.is(e.message, 'Archive not writable', 'should error')
+  }
+  t.end()
 })
 
-test('.write with data object and no writable archive errors', function (t) {
+test('.write with data object and no writable archive errors', async function (t) {
   var archive = { writable: false }
-  var datjson = datJSON(archive)
-  var async = false
-  datjson.write({ specialVal: 'cat' }, function (err) {
-    t.is(err.message, 'Archive not writable', 'should error')
-    t.is(async, true, 'callback is asyncronous')
-    t.end()
-  })
-  async = true
+  var datjson = DatJSON(archive)
+  try {
+    await datjson.write({ specialVal: 'cat' })
+  } catch (e) {
+    t.is(e.message, 'Archive not writable', 'should error')
+  }
+  t.end()
 })
 
 test('Write dat.json to file and archive', function (t) {
   var archive = hyperdrive(ram)
   var file = path.join(__dirname, 'dat.json')
-  archive.ready(function () {
-    var datjson = datJSON(archive, { file: file })
-    datjson.create(function (err) {
-      t.error(err, 'no error')
-      datjson.write({ specialVal: 'cat' }, checkFile)
+  archive.ready(async function () {
+    var datjson = DatJSON(archive, { file: file })
+    try {
+      await datjson.create()
+      await datjson.write({ specialVal: 'cat' })
 
-      function checkFile (err) {
-        t.error(err, 'no error')
-        fs.readFile(file, 'utf-8', function (err, data) {
-          data = JSON.parse(data)
-          t.error(err, 'fs no error')
-          t.ok(data, 'fs has metadata')
-          t.same(data.url, `dat://${archive.key.toString('hex')}`, 'fs url ok')
-          t.same(data.specialVal, 'cat', 'fs has special value')
-          fs.unlinkSync(file)
-          checkRead()
-        })
-      }
+      var data = fs.readFileSync(file, 'utf-8')
+      data = JSON.parse(data)
+      t.ok(data, 'fs has metadata')
+      t.same(data.url, `dat://${archive.key.toString('hex')}`, 'fs url ok')
+      t.same(data.specialVal, 'cat', 'fs has special value')
+      fs.unlinkSync(file)
 
-      function checkRead (err) {
-        t.error(err, 'no error')
-        datjson.read(function (err, data) {
-          t.error(err, 'no error')
-          t.ok(data, 'has metadata')
-          t.same(data.url, `dat://${archive.key.toString('hex')}`, 'url ok')
-          t.same(data.specialVal, 'cat', 'has special value')
-          t.end()
-        })
-      }
-    })
+      data = await datjson.read()
+      t.ok(data, 'has metadata')
+      t.same(data.url, `dat://${archive.key.toString('hex')}`, 'url ok')
+      t.same(data.specialVal, 'cat', 'has special value')
+    } catch (e) {
+      t.error(e, 'no error')
+    }
+    t.end()
   })
 })

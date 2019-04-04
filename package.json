@@ -7,7 +7,7 @@
     "url": "https://github.com/joehand/dat-json/issues"
   },
   "devDependencies": {
-    "hyperdrive": "^9.12.3",
+    "hyperdrive": "^9.14.3",
     "random-access-memory": "^3.1.1",
     "standard": "^12.0.1",
     "tape": "^4.10.1"
@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "dat-encoding": "^5.0.1",
-    "toiletdb": "^1.4.1"
+    "toiletdb": "^2.0.0"
   }
 }
