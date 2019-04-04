@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "dat-encoding": "^5.0.1",
-    "toiletdb": "github:maxogden/toiletdb#async"
+    "toiletdb": "^2.0.0"
   }
 }
